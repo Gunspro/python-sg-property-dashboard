@@ -31,4 +31,6 @@ cd python-sg-property-dashboard
 # Run the Streamlit app
 streamlit run main.py
 
+```
+
 We plan to deploy this project using Docker in the future for easier deployment and distribution.
