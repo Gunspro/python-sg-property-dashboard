@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 from sqlalchemy.orm import Session
 from src.repositories.PropertyRepository import PropertyRepository
 from src.db.database import SessionLocal
-from src.model import PropertyData
+from src.model.property import PropertyData
 
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.support.ui import WebDriverWait
@@ -22,13 +22,14 @@ def scrape_data():
     lists_of_items = my_html.findAll('div', '_19sj7')
     property_list = []
     pagenum = 0
-
+    cnt = 0
     while True:
         for items in lists_of_items:   
             list_items = items.find_all('div', '_1zvu5') #update if anti-webscraper is in place
             pagenum += 1
 
             for item in list_items:
+                cnt += 1 
                 property_info = {}
 
                 price_element = item.find('li', {'class': 'JlU_W'}) #update if anti-webscraper is in place
@@ -36,10 +37,11 @@ def scrape_data():
                 block_address_element = item.find('h2', {'itemprop': 'name'}) #update if anti-webscraper is in place
                 room_element = item.find('li', {'class': '_1LPAx'}) #update if anti-webscraper is in place
 
-                property_info['Price'] = price_element.text if price_element else "N/A"
-                property_info['Year Built'] = year_element.text if year_element else "N/A"
-                property_info['Block and Address'] = block_address_element.text if block_address_element else "N/A"
-                property_info['Number of Rooms'] = room_element.text if room_element else "N/A"
+                property_info['id'] = cnt
+                property_info['price'] = price_element.text if price_element else "N/A"
+                property_info['yearbuilt'] = year_element.text if year_element else "N/A"
+                property_info['block_and_address'] = block_address_element.text if block_address_element else "N/A"
+                property_info['number_of_rooms'] = room_element.text if room_element else "N/A"
 
                 property_list.append(property_info)
 
@@ -50,22 +52,16 @@ def scrape_data():
                     print('Page:', pagenum)
             except:
                 break
-    
+        if pagenum >= 2:  # Break the loop after scraping the 2nd page
+            break
+
         return property_list
 
-def get_db():
+def store_property_data(data: PropertyData):
     db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
-
-
-def store_property_data(data: PropertyData, db: Session):
     property_data = PropertyRepository(db)
+    property_data.truncate_properties()
     property_data.create_properties(data)
+    db.close()
 
     return {"message": "Property data stored successfully"}
-
-propertyData = scrape_data()
-store_property_data(propertyData, get_db())

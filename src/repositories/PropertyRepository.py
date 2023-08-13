@@ -18,6 +18,12 @@ class PropertyRepository:
         return self.db.query(Property).filter(search_condition).all()
     
     def create_properties(self, properties: List[Property]):
-        self.db.bulk_save_objects(properties)
+        property_instances = [Property(**item) for item in properties]  # Use 'properties' parameter
+        self.db.bulk_save_objects(property_instances)
         self.db.commit()
         return properties
+
+    def truncate_properties(self):
+        query = text("TRUNCATE TABLE property_table")
+        self.db.execute(query)
+        self.db.commit()
