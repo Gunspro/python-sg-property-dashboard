@@ -1,7 +1,8 @@
 from typing import List
 from sqlalchemy.orm import Session
 from src.model.property import Property
-from sqlalchemy import or_
+from sqlalchemy import or_, text
+
 
 class PropertyRepository:
     
@@ -24,6 +25,5 @@ class PropertyRepository:
         return properties
 
     def truncate_properties(self):
-        query = text("TRUNCATE TABLE property_table")
-        self.db.execute(query)
+        self.db.execute(text("TRUNCATE TABLE property_table"))
         self.db.commit()
