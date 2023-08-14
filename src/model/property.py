@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, Integer, String, Date
 from src.db.database import Base
 from pydantic import BaseModel, BaseConfig
 from typing import List
@@ -6,7 +6,8 @@ from typing import List
 class Property(Base):
     __tablename__ = "property_table"
 
-    id = Column(Integer, primary_key=True, index=True)
+    id = Column(String, primary_key=True, index=True)
+    timestamp = Column(Date)
     price = Column(String)
     yearbuilt = Column(Integer)
     block_and_address = Column(String)

@@ -1,6 +1,8 @@
 import pandas as pd
 from selenium import webdriver
 from bs4 import BeautifulSoup
+import datetime
+import random
 
 from sqlalchemy.orm import Session
 from src.repositories.PropertyRepository import PropertyRepository
@@ -13,6 +15,12 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.service import Service as ChromeService
 from webdriver_manager.chrome import ChromeDriverManager
+
+
+def generate_listing_id():
+    random_number = random.randint(100000, 999999)  # Generating a random 6-digit number
+    listing_id = f"L{random_number}"
+    return listing_id
 
 def scrape_data():
     driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()))
@@ -29,7 +37,7 @@ def scrape_data():
             pagenum += 1
 
             for item in list_items:
-                cnt += 1 
+                random_listing_id = generate_listing_id()
                 property_info = {}
 
                 price_element = item.find('li', {'class': 'JlU_W'}) #update if anti-webscraper is in place
@@ -37,7 +45,8 @@ def scrape_data():
                 block_address_element = item.find('h2', {'itemprop': 'name'}) #update if anti-webscraper is in place
                 room_element = item.find('li', {'class': '_1LPAx'}) #update if anti-webscraper is in place
 
-                property_info['id'] = cnt
+                property_info['id'] = random_listing_id
+                property_info['timestamp'] = datetime.datetime.now()
                 property_info['price'] = price_element.text if price_element else "N/A"
                 property_info['yearbuilt'] = year_element.text if year_element else "N/A"
                 property_info['block_and_address'] = block_address_element.text if block_address_element else "N/A"

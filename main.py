@@ -15,13 +15,10 @@ app = FastAPI()
 
 app.include_router(router)
 
-@app.on_event("startup")
-async def startup_event():
-    #TODO: Need to create a date timestamp to clock the data that is scraped on a regular basis. Archive the data and view on a dashboard over a period of time.
-    df = scrape_data()
-    store_property_data(df)
-
-#TODO: Data Transformation Service that cleans up the dataset for a more beautiful usage
+# @app.on_event("startup")
+# async def startup_event():
+#     df = scrape_data()
+#     store_property_data(df)
 
 def streamlit_app():
     st.title("Property Data")
