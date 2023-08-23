@@ -33,4 +33,4 @@ streamlit run main.py
 
 ```
 
-We plan to deploy this project using Docker in the future for easier deployment and distribution.
+We plan to deploy this project using Docker in the future for easier deployment and distribution
