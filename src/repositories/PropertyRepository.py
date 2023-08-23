@@ -23,7 +23,3 @@ class PropertyRepository:
         self.db.bulk_save_objects(property_instances)
         self.db.commit()
         return properties
-
-    def truncate_properties(self):
-        self.db.execute(text("TRUNCATE TABLE property_table"))
-        self.db.commit()
