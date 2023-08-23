@@ -74,11 +74,53 @@ def streamlit_service():
         df = pd.DataFrame(property_data)
         
     if st.button("Generate"):
-        # st.dataframe(df)
-        left_col, right_col = st.columns(2)
-        
-        # bar_chart = st.bar_chart(data=df.set_index('block_and_address')['price'])
-        fig = px.bar(df, x='block_and_address', y='price', title='Price by Block', color='price',
+        res = requests.get(url = "http://0.0.0.0:8000/dataviewer/properties")
+        property_data = res.json()
+        df_all = pd.DataFrame(property_data)
+
+        if df['number_of_rooms'].nunique() == 1:
+            df_all = df_all[df_all['number_of_rooms'] == df['number_of_rooms'].iloc[0]]
+
+        fig = px.bar(df, x='block_and_address', y='price', title='Bar Chart Price by Block', color='price',
                  color_continuous_scale='RdYlBu')
+        st.plotly_chart(fig)
+
+        left_col, right_col = st.columns(2)
+        combined_df = df_all.merge(df, on=cols, how='left', suffixes=('', '_filtered'))
+        
+        fig = px.scatter(
+        df_all,
+        x="price",
+        y="floor_size",
+        title="Overview of prices of HDB flats compared to your desired input",
+        color="price",
+        color_continuous_scale='Viridis', 
+        hover_data=['block_and_address', 'number_of_rooms'],
+        )
+
+      
+        fig.update_traces(
+        marker=dict(size=8, opacity=0.2),  
+        selector=dict(mode='markers') 
+        )
+
+        if not df.empty:
+
+            filtered_trace = px.scatter(
+                df,
+                x="price",
+                y="floor_size",
+                color="price",
+                hover_data=['block_and_address', 'number_of_rooms'],
+                color_continuous_scale='Viridis',  
+            ).data[0]
+
+            filtered_trace.update(marker=dict(size=12)) 
+            
+
+            fig.add_trace(filtered_trace)
+
+        fig2 = px.scatter(df, x="block_and_address", y="price", title="Price by Block", color='floor_size', color_continuous_scale='RdYlBu')
         
         left_col.plotly_chart(fig, use_container_width=True)
+        right_col.plotly_chart(fig2, use_container_width=True)

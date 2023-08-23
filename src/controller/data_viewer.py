@@ -25,6 +25,7 @@ def get_all_properties():
         else:
             props.price = data_transformation.transform_price(properties, props.block_and_address, props.price, props.number_of_rooms)
         
+        props.floor_size = data_transformation.transform_floorsize(props.floor_size)
         age = data_transformation.transform_yearbuilt(props.yearbuilt)
         area = data_transformation.assign_location(props.block_and_address).lower()
         

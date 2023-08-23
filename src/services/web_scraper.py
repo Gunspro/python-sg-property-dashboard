@@ -75,6 +75,7 @@ def scrape_data():
             year_element = item.find('li', {'itemprop': 'yearbuilt'}) #update if anti-webscraper is in place
             block_address_element = item.find('h2', {'itemprop': 'name'}) #update if anti-webscraper is in place
             room_element = item.find('li', {'class': '_1LPAx'}) #update if anti-webscraper is in place
+            floor_element = item.find('li', {'itemprop': 'floorSize'})
 
             property_info['id'] = random_listing_id
             property_info['timestamp'] = datetime.datetime.now()
@@ -82,6 +83,7 @@ def scrape_data():
             property_info['yearbuilt'] = year_element.text if year_element else 2018
             property_info['block_and_address'] = block_address_element.text if block_address_element else "N/A"
             property_info['number_of_rooms'] = room_element.text if room_element else "N/A"
+            property_info['floor_size'] = floor_element.text if floor_element else "N/A"
 
             property_list.append(property_info)
 

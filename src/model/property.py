@@ -13,6 +13,7 @@ class Property(Base):
     yearbuilt = Column(Integer)
     block_and_address = Column(String)
     number_of_rooms = Column(String)
+    floor_size = Column(String)
 
 class PropertyData(BaseModel):
     property_list: List[Property] 
@@ -29,6 +30,7 @@ class PropertyView(BaseModel):
     block_and_address: str
     number_of_rooms: int
     area: str
+    floor_size: str
 
 class PropertyViewData(BaseModel):
     property_view_list: List[PropertyView]

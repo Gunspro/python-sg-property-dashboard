@@ -35,6 +35,9 @@ def transform_yearbuilt(data):
     build_age = int(year) - int(data)
     return build_age
 
+def transform_floorsize(data):
+    return data.split('/')[0].strip().replace(',', '').split()[0]
+
 def assign_location(data):
     areas = {
     "Central": [
